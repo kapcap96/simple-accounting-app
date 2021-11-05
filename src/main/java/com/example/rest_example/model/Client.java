@@ -1,8 +1,14 @@
 package com.example.rest_example.model;
 
-public class Client {
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
-    private Integer id;
+@Entity  //указывает на то, что данный класс является сущностью.
+public class Client {
+@Id // указывает, что данное поле является первичным ключом, т.е. это свойство будет использоваться для идентификации каждой уникальной записи
+@GeneratedValue //свойство будет генерироваться автоматически, в скобках можно указать каким образом.
+    private Integer id;                         //
     private String name;
     private String email;
     private String phone;
