@@ -24,41 +24,17 @@ http://localhost:8080/api/socks/outcome
 http://localhost:8080api/socks/{id}
 
 ```
-### Зависимости используемые в проекте 
+### испоьзуемые технологии          
+* org.springframework.boot
+* spring-boot-starter-test
+* org.projectlombok
+* org.modelmapper
+* mysql
 
-```
-<dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-            <version>2.5.6</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.modelmapper</groupId>
-            <artifactId>modelmapper</artifactId>
-            <version>2.4.4</version>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.22</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.25</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <version>2.5.6</version>
-            <scope>test</scope>
-        </dependency>
-```
+            
+           
+       
+
 
 
 
