@@ -6,7 +6,7 @@ import lombok.Getter;
 import java.io.Serializable;
 
 /**
- * Дто модель ( возращает количество носков сортеруя по цвету и количеству хлопка)
+ * Дто модель для возврата количество носков
  */
 @Getter
 @AllArgsConstructor

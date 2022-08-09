@@ -6,7 +6,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- *
+ * ДТО модель для предоставления ответа при поиске socks по ID
  */
 @Data
 @AllArgsConstructor

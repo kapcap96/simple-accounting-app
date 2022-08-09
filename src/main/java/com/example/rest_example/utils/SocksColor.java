@@ -4,6 +4,9 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;
 
+/**
+ * СВОЯ АНОТАЦИЯ SocksColor ПРОВЕРЯЕТ ПАРАМЕТР ЦВЕТА НОСКОВ
+ */
 @Documented
 @Constraint(validatedBy = SocksColorValidator.class)
 @Target( {ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD })

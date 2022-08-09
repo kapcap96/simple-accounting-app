@@ -2,12 +2,12 @@ package com.example.rest_example.model.jpa;
 
 import lombok.AllArgsConstructor;
 
-import java.util.NoSuchElementException;
+import javax.validation.ValidationException;
 
 /**
- *
+ * Модель для выбора типа сортировки
  */
-@AllArgsConstructor // конструктор включающий все возможные поля
+@AllArgsConstructor
 public enum OperationType {
     /**
      * БОЛЬШЕ ЧЕМ
@@ -29,17 +29,18 @@ public enum OperationType {
     /**
      * Получить тип сортировки `getTypeByName` по названию
      *
-     * @param name
-     * @return
-     * @throws NoSuchElementException
+     * @param name наименование цвета
+     * @return тип сортировкт 'operationType'
+     * @throws ValidationException бросается исключение, если не удалось найти тип по имени `name`
      */
-    public static OperationType getTypeByName(String name) throws NoSuchElementException {
+    public static OperationType getTypeByName(String name) throws ValidationException {
+        //TODO() полностью дописать документацию данного перечисления
         //TODO() переписать с помощью Stream API
-        for (OperationType operationType : OperationType.values()) { //values возвращает массив со всеми значениями перечисления
+        for (OperationType operationType : OperationType.values()) {
             if (operationType.name.equals(name)) {
                 return operationType;
             }
         }
-        throw new NoSuchElementException();
+        throw new ValidationException();
     }
 }

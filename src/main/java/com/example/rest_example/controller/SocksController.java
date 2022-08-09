@@ -12,20 +12,23 @@ import com.example.rest_example.service.ISaveSocksService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import javax.validation.ValidationException;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 
 /**
- *
+ * Класс позволяет осуществлять различные методы
+ * Например: сортировка носков по цвету и количеству хлопка
+ * добавление носков в базу данных и их удаление.
  */
 @Validated
 @RestController
@@ -40,17 +43,17 @@ public class SocksController {
      * ПОЛУЧЕНИЕ КОЛИЧЕСТВО НОСКОВ ПО ПАРАМЕТРАМ
      *
      * @param color      цвет
-     * @param operation  тип опирации
+     * @param operation  тип операции
      * @param cottonPart количество хлопка
-     * @return
+     * @return возвращает данные с заданными параметрами + суммирует quantity
      */
-    @GetMapping(value = "/api/socks") //возвращает количество носков по параметра
+    @GetMapping(value = "/api/socks")
     public ResponseEntity<SocksQuantityResponse> getSocksQuantity(
-            @com.example.rest_example.utils.SocksColor @RequestParam("color") String color,              // связывает значение параметра шаблона URI или сегмент пути,
-            @com.example.rest_example.utils.OperationType @RequestParam("operation") String operation,      //  содержащий пара
+            @com.example.rest_example.utils.SocksColor @RequestParam("color") String color,
+            @com.example.rest_example.utils.OperationType @RequestParam("operation") String operation,
             @Max(100) @Min(0) @RequestParam("cottonPart") Integer cottonPart
     ) {
-        // в зависимости от типа сортируем носки ( больше, меньше, равно)
+        // в зависимости от типа сортируем носки (больше, меньше, равно)
         List<Socks> socksList;
         switch (OperationType.getTypeByName(operation)) {
             case MORE_THAN:
@@ -63,7 +66,7 @@ public class SocksController {
                 socksList = repository.findByColorAndCottonPartEquals(SocksColor.getColorByName(color), cottonPart);
                 break;
             default:
-                socksList = Collections.emptyList(); // Collection.emptyList () создает новый экземпляр пустого списка
+                socksList = Collections.emptyList();
         }
 
         return ResponseEntity.ok(
@@ -76,48 +79,43 @@ public class SocksController {
     /**
      * ДОБАВЛЕНИЕ НОВЫ ИЛИ УЖЕ СУЩЕСТВУЮЩИХ НОСКОВ ПО ТИПУ ( ЦВЕТ, КОЛ-ВО ХЛОПКА, КОЛИЧЕСТВО )
      *
-     * @param body     входящий запрос ДТО ( JSON)
-     * @param response возвращение HTTP ответов ( в зависимости от взодящих параметров )
+     * @param body     входящий запрос ДТО (JSON)
+     * @param response возвращение HTTP ответов (в зависимости от входящих параметров)
      */
     @PostMapping(value = "/api/socks/income")
     public void addIncomeSocks(
             @Valid @RequestBody SocksIncomeDTO body,
-            HttpServletResponse response, // возвращает ответ в JSON  о статусах
-            BindingResult result
+            HttpServletResponse response
     ) {
-        if (result.hasErrors()) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value()); // HTTP ответ 400 ошибка запроса
-        }
-        try {
-            saveService.saveSocks(body);
-        } catch (RuntimeException e) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value()); // HTTP ответ 400 ошибка запроса
-            return;
-        }
+        saveService.saveSocks(body);
         response.setStatus(HttpStatus.OK.value()); //HTTP ответ 200
     }
 
+    /**
+     * УДАЛЯЕТ НОСКИ ИЗ БД ИЛИ УМЕНЬШАЕТ ИХ КОЛИЧЕСТВО ЕСЛИ КОЛИЧЕСТВО НОСКОВ В ЗАПРОСЕ < ЧЕМ В БД
+     *
+     * @param body     входящий запрос ДТО (JSON)
+     * @param response возвращение HTTP ответов (в зависимости от входящих параметров)
+     */
     @PostMapping(value = "/api/socks/outcome")
     public void addOutcomeSocks(
             @Valid @RequestBody SocksIncomeDTO body,
-            HttpServletResponse response,
-            BindingResult result// возвращает ответ в JSON  о статусах
+            HttpServletResponse response
     ) {
-        if (result.hasErrors()) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-        }
         try {
             deleteService.deleteSocks(body);
-        } catch (RuntimeException e) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value()); // HTTP ответ 400 ошибка запроса
+        } catch (NoSuchElementException e) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
             return;
         }
         response.setStatus(HttpStatus.OK.value()); //HTTP ответ 200
     }
 
     /**
-     * @param id
-     * @return
+     * Данный клас позваляет находить в БД носки по запросу ID
+     *
+     * @param id номер ID
+     * @return Если обьект найден воозврашает его (сконвертировав все данные)если нет выдаёт статус ошибки 400.
      */
     @GetMapping(value = "/api/socks/{id}")
     public ResponseEntity<AllSocksResponse> getSocksQuantity(@PathVariable(name = "id") long id) {
@@ -126,6 +124,25 @@ public class SocksController {
                 .orElse(ResponseEntity.badRequest().build());
     }
 
+    /**
+     * Данный класс занимается обработкой ошибок при наличии проверки.
+     *
+     * @param e ValidationException
+     * @return Возаращает getMessage (причину ошибки)
+     */
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<Object> handleIllegalArguments(ValidationException e) {
+        return ResponseEntity
+                .badRequest()
+                .body(e.getMessage());
+    }
+
+    /**
+     * Класс конвертирует данные о Носках
+     *
+     * @param socks Носки
+     * @return возвращает все параметры Socks
+     */
     private static AllSocksResponse convert(Socks socks) {
         return new AllSocksResponse(
                 socks.getId(),

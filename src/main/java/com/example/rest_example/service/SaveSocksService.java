@@ -22,7 +22,7 @@ public class SaveSocksService implements ISaveSocksService {
      * ели Socks в БД найден, то складывает количество носков.
      * ели Socks в БД не найден,то создает новый обект в БД с заданными параметрами.
      *
-     * @param dto
+     * @param dto дто
      */
     @Override //Переопределение означает, что подкласс заменяет унаследованное поведение
     @Transactional
@@ -39,19 +39,5 @@ public class SaveSocksService implements ISaveSocksService {
                                 )
                         )
                 );
-
-
     }
 }
-
-//    SocksColor color = SocksColor.getColorByName(dto.getColor());
-//// проверить в БД на существование таких носков
-
-//      Socks socks = repository.findByColorAndCottonPart(color, dto.getCottonPart());
-//                if (socks != null && dto.getQuantity() >= 1) { // проверяет наличе носков с введеными параметрами в БД
-//                socks.setQuantity(socks.getQuantity() + dto.getQuantity()); // если в БД нашел, то просто увеличиваем кол-во
-//                } else { // если носки с данным параметром не найдены, то сохраняем новые в БД.
-//                //repository.save(socks);
-//                repository.save(
-//                new Socks(color, dto.getCottonPart(), dto.getQuantity())
-//                );

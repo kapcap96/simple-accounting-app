@@ -3,26 +3,27 @@ package com.example.rest_example.model.jpa;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import javax.validation.ValidationException;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
 /**
- * Перечелсление возможных цветов носков
+ * Перечисление возможных цветов носков
  */
 @AllArgsConstructor // конструктор включающий все возможные поля
 public enum SocksColor {
     /**
-     *
+     * ЧЕРНЫЙ ЦВЕТ
      */
     BLACK("black"),
 
     /**
-     *
+     * КРАСНЫЙ ЦВЕТ
      */
     RED("red"),
 
     /**
-     *
+     * ГОЛУБОЙ ЦВЕТ
      */
     BLUE("blue");
 
@@ -34,14 +35,13 @@ public enum SocksColor {
      *
      * @param name наименование цвета
      * @return цвет носков типа `SocksColor`
-     * @throws NoSuchElementException бросается исключение, если не удалось найти цвет по имени `name`
+     * @throws ValidationException бросается исключение, если не удалось найти цвет по имени `name`
      */
-    public static SocksColor getColorByName(String name) throws NoSuchElementException {
-        //предупреждаем с помощью throws,
-        // что метод может выбросить если не удалось найти цвет по имени `name`
+    public static SocksColor getColorByName(String name) throws ValidationException {
+
         return Arrays.stream(SocksColor.values())
                 .filter(socksColor -> socksColor.name.equals(name))
                 .findFirst()
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(ValidationException::new);
     }
 }

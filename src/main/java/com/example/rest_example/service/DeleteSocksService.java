@@ -12,7 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.NoSuchElementException;
-
+/**
+ * класс для определения бизнес-логики
+ */
 @RequiredArgsConstructor
 @Service
 public class DeleteSocksService implements IDeleteSocksService {
@@ -21,31 +23,28 @@ public class DeleteSocksService implements IDeleteSocksService {
 
     /**
      * Сервис по удалению носков из БД
-     * 1) елси количество носков в запросе  меньше чем в бд,то вычитаем разницу.
-     * 2) если количество насков в запросе == количеству вносков в БД, удаляем обьект из БД.
+     * 1) если количество носков в запросе меньше чем в бд, то вычитаем разницу.
+     * 2) если количество носков в запросе == количеству носков в БД, удаляем обьект из БД.
      *
      * @param dto дто
      */
     @Override
     @Transactional
-    public void deleteSocks(SocksIncomeDTO dto) {
-
-
+    public void deleteSocks(SocksIncomeDTO dto) throws NoSuchElementException {
         repository.findByColorAndCottonPart(SocksColor.getColorByName(dto.getColor()), dto.getCottonPart())
                 .ifPresentOrElse(socks ->
-                {
-                    if (dto.getQuantity() < socks.getQuantity()) {
-                        socks.setQuantity(socks.getQuantity() - dto.getQuantity());
-                    } else if (dto.getQuantity() == socks.getQuantity()) {
-                        repository.delete(socks);
-                    }
-                    throw new NoSuchElementException();
-
-
-                }, () -> {
-                    throw new NoSuchElementException();
-                });
-
-
+                        {
+                            if (dto.getQuantity() < socks.getQuantity()) {
+                                socks.setQuantity(socks.getQuantity() - dto.getQuantity());
+                            } else if (dto.getQuantity() == socks.getQuantity()) {
+                                repository.deleteById(socks.getId());
+                            } else {
+                                throw new NoSuchElementException();
+                            }
+                        },
+                        () -> {
+                            throw new NoSuchElementException();
+                        }
+                );
     }
 }

@@ -4,6 +4,9 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;
 
+/**
+ * СВОЯ АНАТАЦИЯ OperationType ПРОВЕРЯЕТ ТИП ОПЕРАЦИИ
+ */
 @Documented
 @Constraint(validatedBy = OperationTypeValidator.class)
 @Target( {ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD })

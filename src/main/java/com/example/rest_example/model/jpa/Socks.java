@@ -14,26 +14,23 @@ import java.util.Objects;
  * JPA- модель носков
  */
 
-@Entity                 //указывает на то, что данный класс является сущностью.
-@Table(name = "socks") //указывает на имя таблицы, которая будет отображаться в этой сущности
-@Getter               // автоматически генерирует гетеры
-@NoArgsConstructor   //@NoArgsConstructor создаёт пустой конструктор,
+@Entity
+@Table(name = "socks")
+@Getter
+@NoArgsConstructor
 public class Socks {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    //@Enumerated определяет в какой форме перечисления должны быть сохранены в базе данных.
-    // EnumType.STRING указывает на то, что значение перечисления должно быть сохранено стр
-    // nullable Атрибут, допускающий значение NULL, указывает, может ли поле иметь значение NULL
-    //@Column используется для определения соответствия между атрибутами в классе сущности и полями в таблице данных.
+
     @Enumerated(EnumType.STRING)
     @Column(name = "color", nullable = false)
     private SocksColor color;
 
-    @Min(value = 0)   //фиксирует минимальное значение
-    @Max(value = 100) //фиксирует максимальное значение
+    @Min(value = 0)
+    @Max(value = 100)
     @Column(nullable = false)
     private int cottonPart;
 
@@ -43,9 +40,10 @@ public class Socks {
     private int quantity;
 
     /**
-     * @param color
-     * @param cottonPart
-     * @param quantity
+     * конструктор Socks
+     * @param color цвет носков
+     * @param cottonPart количество хлопка
+     * @param quantity количество пар
      */
     public Socks(SocksColor color, int cottonPart, int quantity) {
         this.color = color;
