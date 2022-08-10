@@ -18,10 +18,10 @@
 
 ### Конфигурация системы
 ```
-http://localhost:8080//api/socks
-http://localhost:8080/api/socks/income
-http://localhost:8080/api/socks/outcome
-http://localhost:8080api/socks/{id}
+/api/socks
+/api/socks/income
+/api/socks/outcome
+/api/socks/{id}
 
 ```
 ### испоьзуемые технологии          
